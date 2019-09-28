@@ -55,9 +55,32 @@ export default (sequelize, DataTypes) => {
       field: 'phone',
       type: DataTypes.STRING, unique: true,
       validate: { isNumeric: true, len: [13, 13] }
+    },
+
+    createdAt: {
+      field: 'createdat',
+      type: DataTypes.DATE, allowNull: false
+    },
+
+    updatedAt: {
+      field: 'updatedat',
+      type: DataTypes.DATE, allowNull: false
     }
 
-  }, { sequelize, modelName: 'users', timestamps: false });
+  }, {
+      sequelize,
+      modelName: 'users',
+      hooks: {
+        beforeCreate: function (user, options) {
+          let ageCheck = new Date();
+          ageCheck.setFullYear(ageCheck.getFullYear() - 12);
+          let birthDate = new Date(user.birthDate);
+          if (ageCheck < birthDate) {
+            throw new Error('user must be older than 12 years old.');
+          }
+        }
+      }
+    });
 
   return User;
 }
