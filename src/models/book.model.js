@@ -13,7 +13,7 @@ export default (sequelize, DataTypes) => {
             const schema = {
                 title: Joi.string().min(1).max(200).required(),
                 author: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(2).max(60).required(),
-                isbn: Joi.string().isbn().length(13).required(),
+                isbn: Joi.string().length(13).required(),
                 publisher: Joi.string().min(2).max(60),
                 edition: Joi.string().min(1).max(3),
                 age: Joi.date(),     
@@ -46,7 +46,7 @@ export default (sequelize, DataTypes) => {
         isbn: {
             field: 'isbn',
             type: DataTypes.STRING,unique: true, allowNull: false,
-            validade: { len: [13, 13] }
+            validade: { isNumeric: true,len: [13, 13] }
         },
 
         publisher: {
