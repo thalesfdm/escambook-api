@@ -14,9 +14,9 @@ export default (sequelize, DataTypes) => {
                 title: Joi.string().min(1).max(200).required(),
                 author: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(2).max(60).required(),
                 isbn: Joi.string().isbn().length(13).required(),
-                publisher: Joi.string().min(2).max(60).required(),
-                edition: Joi.string().min(1).max(3).required(),
-                age: Joi.string().length(4).required(),     
+                publisher: Joi.string().min(2).max(60),
+                edition: Joi.string().min(1).max(3),
+                age: Joi.date(),     
                 idiom: Joi.string().min(2).max(30).required()
             }
             return Joi.validate(book, schema);
@@ -46,31 +46,31 @@ export default (sequelize, DataTypes) => {
         isbn: {
             field: 'isbn',
             type: DataTypes.STRING,unique: true, allowNull: false,
-            validade: { len: [13, 13]}
+            validade: { len: [13, 13] }
         },
 
         publisher: {
             field: 'publisher',
             type: DataTypes.STRING,
-            validate: { len: [2, 60]}
+            validate: { len: [2, 60] }
         },
 
         edition: {
             field: 'edition',
             type: DataTypes.STRING,
-            validate: { len: [1, 3]}
+            validate: { len: [1, 3] }
         },
 
         age: {
             field: 'age',
-            type: DataTypes.STRING,
-            validate: { len: [4, 4]}
+            type: DataTypes.DATEONLY,
+            validate: { isDate: true }
         },
 
         idiom: {
             field: 'idiom',
             type: DataTypes.STRING, allowNull: false,
-            validate: { len: [2, 30]}
+            validate: { len: [2, 30] }
         }
 
     }, { sequelize, modelName: 'book', timestamps: false });
