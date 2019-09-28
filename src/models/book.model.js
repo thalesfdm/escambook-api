@@ -15,9 +15,9 @@ export default (sequelize, DataTypes) => {
                 author: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(2).max(60).required(),
                 isbn: Joi.string().length(13).required(),
                 publisher: Joi.string().min(2).max(60),
-                edition: Joi.string().min(1).max(3),
-                age: Joi.date(),     
-                idiom: Joi.string().min(2).max(30).required()
+                edition: Joi.integer(),
+                publicationYear: Joi.date(),     
+                bookLanguage: Joi.string().min(2).max(30).required()
             }
             return Joi.validate(book, schema);
         }
@@ -57,18 +57,18 @@ export default (sequelize, DataTypes) => {
 
         edition: {
             field: 'edition',
-            type: DataTypes.STRING,
-            validate: { len: [1, 3] }
+            type: DataTypes.INTEGER,
+            validate: { isNumeric: true }
         },
 
-        age: {
-            field: 'age',
+        publicationYear: {
+            field: 'publicationYear',
             type: DataTypes.DATEONLY,
             validate: { isDate: true }
         },
 
-        idiom: {
-            field: 'idiom',
+        bookLanguage: {
+            field: 'bookLanguage',
             type: DataTypes.STRING, allowNull: false,
             validate: { len: [2, 30] }
         }
