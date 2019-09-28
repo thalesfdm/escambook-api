@@ -1,33 +1,15 @@
 import Sequelize from 'sequelize';
-import Joi from '@hapi/joi';
-
 
 const Model = Sequelize.Model;
 
 export default (sequelize, DataTypes) => {
 
-    class Book extends Model {
-
-        static validateBook(book) {
-
-            const schema = {
-                title: Joi.string().min(1).max(200).required(),
-                author: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(2).max(60).required(),
-                isbn: Joi.string().length(13).required(),
-                publisher: Joi.string().min(2).max(60),
-                edition: Joi.integer(),
-                publicationYear: Joi.date(),     
-                bookLanguage: Joi.string().min(2).max(30).required()
-            }
-            return Joi.validate(book, schema);
-        }
-
-    }
+    class Book extends Model { }
 
     Book.init({
 
         bookId: {
-            field: 'bookId',
+            field: 'bookid',
             type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true
         },
 
@@ -62,18 +44,28 @@ export default (sequelize, DataTypes) => {
         },
 
         publicationYear: {
-            field: 'publicationYear',
+            field: 'publicationyear',
             type: DataTypes.DATEONLY,
             validate: { isDate: true }
         },
 
         bookLanguage: {
-            field: 'bookLanguage',
+            field: 'booklanguage',
             type: DataTypes.STRING, allowNull: false,
             validate: { len: [2, 30] }
+        },
+
+        createdAt: {
+            field: 'createdat',
+            type: DataTypes.DATE, allowNull: false
+        },
+
+        updatedAt: {
+            field: 'updatedat',
+            type: DataTypes.DATE, allowNull: false
         }
 
-    }, { sequelize, modelName: 'book', timestamps: false });
+    }, { sequelize, modelName: 'book', freezeTableName: true });
 
     return Book;
 }
