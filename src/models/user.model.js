@@ -1,30 +1,16 @@
 import Sequelize from 'sequelize';
-import Joi from '@hapi/joi';
 
 const Model = Sequelize.Model;
 
 export default (sequelize, DataTypes) => {
 
-  class User extends Model {
-
-    static validateUser(user) {
-      const schema = {
-        email: Joi.string().email().min(8).max(40).required(),
-        password: Joi.string().min(4).max(16).required(),
-        name: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(2).max(60).required(),
-        birthDate: Joi.date(),
-        phone: Joi.string().length(13)
-      }
-      return Joi.validate(user, schema);
-    }
-
-  }
+  class User extends Model { }
 
   User.init({
 
-    userId: {
+    id: {
       field: 'userid',
-      type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true
+      type: DataTypes.UUID, autoIncrement: true, primaryKey: true
     },
 
     email: {
@@ -76,11 +62,12 @@ export default (sequelize, DataTypes) => {
           ageCheck.setFullYear(ageCheck.getFullYear() - 12);
           let birthDate = new Date(user.birthDate);
           if (ageCheck < birthDate) {
-            throw new Error('user must be older than 12 years old.');
+            throw new Error('user must be older than 12 years old');
           }
         }
       }
     });
 
   return User;
+
 }
