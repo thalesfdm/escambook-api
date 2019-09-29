@@ -82,7 +82,7 @@ class UserController {
         address: { city, district, postalCode, street, houseNumber }
       }, { include: models.Address });
 
-      return res.json({ success: true, message: 'registration successful', userId: user.userId });
+      return res.json({ success: true, message: 'registration successful', id: user.id });
 
     } catch (e) {
       const error = {};
