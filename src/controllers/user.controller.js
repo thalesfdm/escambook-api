@@ -51,7 +51,7 @@ class UserController {
       {
         email: Joi.string().email().max(40).required(),
         password: Joi.string().min(4).max(16).required(),
-        name: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(4).max(60),
+        name: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(4).max(60).required(),
         birthDate: Joi.date().less(maxDate),
         phone: Joi.string().length(13),
         city: Joi.string().min(4).max(60).required(),
