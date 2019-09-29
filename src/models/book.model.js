@@ -28,7 +28,7 @@ export default (sequelize, DataTypes) => {
         isbn: {
             field: 'isbn',
             type: DataTypes.STRING,unique: true, allowNull: false,
-            validade: { isNumeric: true,len: [13, 13] }
+            validate: { isNumeric: true, len: [13, 13] }
         },
 
         publisher: {
