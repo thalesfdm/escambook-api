@@ -8,9 +8,9 @@ export default (sequelize, DataTypes) => {
 
   User.init({
 
-    userId: {
+    id: {
       field: 'userid',
-      type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true
+      type: DataTypes.UUID, autoIncrement: true, primaryKey: true
     },
 
     email: {
@@ -69,4 +69,5 @@ export default (sequelize, DataTypes) => {
     });
 
   return User;
+
 }

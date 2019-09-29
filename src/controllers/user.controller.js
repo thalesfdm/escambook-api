@@ -10,8 +10,8 @@ class UserController {
 
     const { error } = Joi.validate(req.body,
       {
-        email: Joi.string().email().min(8).max(40).required(),
-        password: Joi.string().min(4).max(16).required()
+        email: Joi.string().email().max(40).required(),
+        password: Joi.string().max(16).required()
       }
     )
 
@@ -44,13 +44,21 @@ class UserController {
   // @POST /api/users/register
   static async register(req, res) {
 
+    const today = new Date();
+    const maxDate = today.setFullYear(today.getFullYear() - 12);
+
     const { error } = Joi.validate(req.body,
       {
-        email: Joi.string().email().min(8).max(40).required(),
+        email: Joi.string().email().max(40).required(),
         password: Joi.string().min(4).max(16).required(),
-        name: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(2).max(60),
-        birthDate: Joi.date(),
-        phone: Joi.string().length(13)
+        name: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(4).max(60),
+        birthDate: Joi.date().less(maxDate),
+        phone: Joi.string().length(13),
+        city: Joi.string().min(4).max(60).required(),
+        district: Joi.string().length(2).required(),
+        postalCode: Joi.string().length(8).required(),
+        street: Joi.string().max(40),
+        houseNumber: Joi.string().max(6)
       }
     )
 
@@ -58,7 +66,7 @@ class UserController {
       return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
-    const { email, password, name, birthDate, phone } = req.body;
+    const { email, password, name, birthDate, phone, city, district, postalCode, street, houseNumber } = req.body;
     const user = await models.User.findOne({ where: { email } });
 
     if (user) {
@@ -68,9 +76,13 @@ class UserController {
     try {
       const saltRounds = 10;
       const hash = await bcrypt.hash(password, saltRounds);
-      const newUser = await models.User.create({ email, password: hash, name, birthDate, phone });
 
-      return res.json({ success: true, message: 'registration successful', userId: newUser.id });
+      const user = await models.User.create({
+        email, password: hash, name, birthDate, phone,
+        address: { city, district, postalCode, street, houseNumber }
+      }, { include: models.Address });
+
+      return res.json({ success: true, message: 'registration successful', userId: user.userId });
 
     } catch (e) {
       const error = {};
@@ -82,7 +94,7 @@ class UserController {
       if (Object.keys(error).length > 0) {
         return res.status(400).json({ success: false, message: error });
       } else {
-        return res.status(400).json({ success: false, message: e.toString().slice(7) });
+        return res.status(400).json({ success: false, message: e.toString() });
       }
 
     }
