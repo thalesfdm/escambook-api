@@ -1,4 +1,4 @@
-import books from './book';
+import books from './books';
 import users from './users';
 
 function setRoutes(app) {
