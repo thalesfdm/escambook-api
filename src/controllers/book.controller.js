@@ -26,13 +26,13 @@ class BookController {
         const book = await models.Book.findOne({ where: {isbn} });
 
         if(book) {
-            return res.status(400).json({ sucess: false, message: "Book register already exists" });
+            return res.status(400).json({ sucess: false, message: "book already exists" });
         }
 
         try {
             const newBook = await models.Book.create({ title, author, isbn, publisher, edition, publicationYear, bookLanguage });
             
-            return res.json({ sucess: true, message: "book registration sucessful.", bookId: newBook.bookId });
+            return res.json({ sucess: true, message: "registration sucessful", bookId: newBook.bookId });
 
         } catch (e) {
             const error = {};
@@ -44,7 +44,7 @@ class BookController {
             if (Object.keys(error).length > 0) {
                 return res.status(400).json({ sucess: false, message: error });
             } else {
-                return res.status(400).json({ sucess: false, message: e.toString().slice(7) });
+                return res.status(400).json({ sucess: false, message: e.toString() });
             }
         }
     }
