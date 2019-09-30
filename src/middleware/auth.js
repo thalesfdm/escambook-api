@@ -19,8 +19,7 @@ export function auth(req, res, next) {
 export function generateToken(user) {
 
   return jwt.sign({
-    id: user.id,
-    username: user.username
+    userId: user.id
   }, process.env.PVT_KEY, { expiresIn: '8h' });
 
 }
