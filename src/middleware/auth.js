@@ -4,7 +4,7 @@ export function auth(req, res, next) {
 
   const token = req.header('x-auth-token');
 
-  if (!token) return res.status(401).json({ success: false, message: 'no token provided' });
+  if (!token) return res.status(400).json({ success: false, message: 'no token provided' });
 
   try {
     const decoded = jwt.verify(token, process.env.PVT_KEY);
