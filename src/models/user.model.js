@@ -43,6 +43,11 @@ export default (sequelize, DataTypes) => {
       validate: { isNumeric: true, len: [13, 13] }
     },
 
+    imageId: {
+      field: 'profilepic',
+      type: DataTypes.STRING, unique: true
+    },
+
     createdAt: {
       field: 'createdat',
       type: DataTypes.DATE, allowNull: false

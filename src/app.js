@@ -1,5 +1,6 @@
 import express, { json } from 'express';
 import morgan from 'morgan';
+import { cloudinaryConfig } from './cloudinary';
 import setRoutes from './routes';
 
 class App {
@@ -12,6 +13,7 @@ class App {
   setup() {
     this.app.use(json());
     this.app.use(morgan('dev'));
+    this.app.use('*', cloudinaryConfig);
     setRoutes(this.app);
   }
 
