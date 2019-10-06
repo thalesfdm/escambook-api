@@ -2,8 +2,44 @@ import models from '../models';
 import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../middleware/auth';
+import { dataUri } from '../middleware/multer';
+import { v2 } from 'cloudinary/lib/cloudinary';
 
 class UserController {
+
+  // @GET /api/users/:userId
+  static async getById(req, res) {
+
+    const { error } = Joi.validate(req.params,
+      {
+        userId: Joi.number().integer()
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const id = req.params.userId;
+    const user = await models.User.findOne({ where: { id }, include: [models.Image] });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'there is no user with such id' });
+    }
+
+    let profilepic = '';
+
+    if (user.image) {
+      profilepic = user.image.cloudImage;
+    }
+
+    return res.json({
+      success: true, message: 'user found in database', user: {
+        id: user.id, name: user.name, profilepic
+      }
+    });
+
+  }
 
   // @POST /api/users/login
   static async login(req, res) {
@@ -13,7 +49,7 @@ class UserController {
         email: Joi.string().email().max(40).required(),
         password: Joi.string().max(16).required()
       }
-    )
+    );
 
     if (error) {
       return res.status(400).json({ success: false, message: error.details[0].message });
@@ -41,6 +77,58 @@ class UserController {
 
   }
 
+  // @POST /api/users/profilepic
+  static async uploadProfilePic(req, res) {
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'no image provided' });
+    }
+
+    const userId = req.user.userId;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'invalid authentication' });
+    }
+
+    const user = await models.User.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'there is no user with such id' });
+    }
+
+    const file = dataUri(req).content;
+
+    try {
+      const result = await v2.uploader.upload(file,
+        {
+          allowed_formats: ['jpg', 'png'],
+          folder: 'profilepic',
+          public_id: `user-${userId}-profilepic`
+        });
+
+      const cloudImage = result.url;
+
+      // se o usuário já tem uma imagem de perfil, apenas atualiza o link no bd,
+      // se não possui, cria uma nova imagem e relaciona ela ao usuário:
+
+      let image = {};
+
+      if (user.imageId) {
+        image = await models.Image.findOne({ where: { id: user.imageId } });
+        await models.Image.update({ cloudImage }, { where: { id: user.imageId } });
+      } else {
+        image = await models.Image.create({ userId, cloudImage });
+        await models.User.update({ imageId: image.id }, { where: { id: userId } });
+      }
+
+      return res.json({ success: true, message: 'image uploaded', userId, cloudImage });
+
+    } catch (e) {
+      return res.status(400).json({ success: false, message: 'could not upload image' });
+    }
+
+  }
+
   // @POST /api/users/register
   static async register(req, res) {
 
@@ -60,7 +148,7 @@ class UserController {
         street: Joi.string().max(40),
         houseNumber: Joi.string().max(6)
       }
-    )
+    );
 
     if (error) {
       return res.status(400).json({ success: false, message: error.details[0].message });
