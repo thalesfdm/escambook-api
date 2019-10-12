@@ -6,25 +6,21 @@ export default (sequelize, DataTypes) => {
 
     class Copy extends Model { }
 
-    Copies.init({
+    Copy.init({
 
         copyId: {
             field: 'copyid',
-            type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true
+            type: DataTypes.UUID, autoIncrement: true, primaryKey: true
         },
 
         userId: {
             field: 'ownerid',
-            type: DataType.UUID,
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
+            type: DataTypes.UUID, allowNull: false
         },
 
         bookId: {
             field: 'bookid',
-            type: DataType.UUID,
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
+            type: DataTypes.UUID, allowNull: false
         },
 
         condition: {
@@ -43,7 +39,7 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.DATE, allowNull: false
         }
 
-    }, { sequelize, modelName: 'copies', freezeTableName: true });
+    }, { sequelize, modelName: 'copies' });
 
     return  Copy;
 }
