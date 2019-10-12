@@ -27,7 +27,7 @@ export default (sequelize, DataTypes) => {
 
         isbn: {
             field: 'isbn',
-            type: DataTypes.STRING,unique: true, allowNull: false,
+            type: DataTypes.STRING, unique: true, allowNull: false,
             validate: { isNumeric: true, len: [13, 13] }
         },
 
@@ -38,13 +38,13 @@ export default (sequelize, DataTypes) => {
         },
 
         edition: {
-            field: 'edition',
+            field: 'editionnumber',
             type: DataTypes.INTEGER,
             validate: { isNumeric: true }
         },
 
         publicationYear: {
-            field: 'publicationyear',
+            field: 'pubyear',
             type: DataTypes.DATEONLY,
             validate: { isDate: true }
         },
@@ -65,7 +65,10 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.DATE, allowNull: false
         }
 
-    }, { sequelize, modelName: 'book', freezeTableName: true });
+    }, {
+        sequelize,
+        modelName: 'books'
+    });
 
     return Book;
 }

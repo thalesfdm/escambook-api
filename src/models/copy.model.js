@@ -39,7 +39,10 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.DATE, allowNull: false
         }
 
-    }, { sequelize, modelName: 'copies' });
+    }, {
+        sequelize,
+        modelName: 'copies'
+    });
 
-    return  Copy;
+    return Copy;
 }

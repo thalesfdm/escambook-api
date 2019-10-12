@@ -20,13 +20,13 @@ export default (sequelize, DataTypes) => {
     },
 
     password: {
-      field: 'password',
+      field: 'passwordhash',
       type: DataTypes.STRING, allowNull: false,
       validate: { len: [2, 256] }
     },
 
     name: {
-      field: 'name',
+      field: 'fullname',
       type: DataTypes.STRING, allowNull: false,
       validate: { is: /^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/, len: [2, 60] }
     },
@@ -59,19 +59,19 @@ export default (sequelize, DataTypes) => {
     }
 
   }, {
-      sequelize,
-      modelName: 'users',
-      hooks: {
-        beforeCreate: function (user, options) {
-          let ageCheck = new Date();
-          ageCheck.setFullYear(ageCheck.getFullYear() - 12);
-          let birthDate = new Date(user.birthDate);
-          if (ageCheck < birthDate) {
-            throw new Error('user must be older than 12 years old');
-          }
+    sequelize,
+    modelName: 'users',
+    hooks: {
+      beforeCreate: function (user, options) {
+        let ageCheck = new Date();
+        ageCheck.setFullYear(ageCheck.getFullYear() - 12);
+        let birthDate = new Date(user.birthDate);
+        if (ageCheck < birthDate) {
+          throw new Error('user must be older than 12 years old');
         }
       }
-    });
+    }
+  });
 
   return User;
 

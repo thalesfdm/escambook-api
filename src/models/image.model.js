@@ -33,7 +33,10 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.DATE, allowNull: false
     }
 
-  }, { sequelize, modelName: 'image', freezeTableName: true });
+  }, {
+    sequelize,
+    modelName: 'images'
+  });
 
   return Image;
 

@@ -44,11 +44,10 @@ export default (sequelize, DataTypes) => {
     },
 
   }, {
-      sequelize,
-      modelName: 'address',
-      freezeTableName: true,
-      timestamps: false
-    });
+    sequelize,
+    modelName: 'addresses',
+    timestamps: false
+  });
 
   return Address;
 
