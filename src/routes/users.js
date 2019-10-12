@@ -6,15 +6,19 @@ import { auth } from '../middleware/auth';
 const router = new Router();
 
 // @GET /api/users/:userId
+// @GET /api/users/:userId/books
 
 router.get('/:userId', UserController.getById);
+router.get('/:userId/books', UserController.getCopies);
 
+// @POST /api/users/books/add   #
 // @POST /api/users/login
-// @POST /api/users/profilepic
+// @POST /api/users/profilepic  #
 // @POST /api/users/register
 
+router.post('/books/add', auth, UserController.addCopy);
 router.post('/login', UserController.login);
-router.post('/profilepic', auth, multerUploads, UserController.uploadProfilePic);
+router.post('/profilepic', auth, multerUploads, UserController.addProfilePic);
 router.post('/register', UserController.register);
 
 export default router;

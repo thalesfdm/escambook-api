@@ -33,11 +33,92 @@ class UserController {
       profilepic = user.image.cloudImage;
     }
 
+    const { name, createdAt, updatedAt } = user;
+
     return res.json({
       success: true, message: 'user found in database', user: {
-        id: user.id, name: user.name, profilepic
+        userId: id, name, profilepic, createdAt, updatedAt
       }
     });
+
+  }
+
+  // @GET /api/users/:userId/books
+  static async getCopies(req, res) {
+    const { error } = Joi.validate(req.params,
+      {
+        userId: Joi.number().integer()
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const id = req.params.userId;
+    const user = await models.User.findOne({
+      where: { id }, include: [models.Copy]
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'there is no user with such id' });
+    }
+
+    return res.json({
+      success: true, message: 'user found in database', user: {
+        userId: user.id, name: user.name, books: user.copies
+      }
+    });
+
+  }
+
+  // @POST /api/users/books/add
+  static async addCopy(req, res) {
+
+    const userId = req.user.userId;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'invalid authentication' });
+    }
+
+    const { error } = Joi.validate(req.body,
+      {
+        bookId: Joi.number().integer().required(),
+        condition: Joi.string().min(2).max(40).required()
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const { bookId, condition } = req.body;
+    const book = await models.Book.findOne({ where: { id: bookId } });
+
+    if (!book) {
+      return res.status(400).json({ success: false, message: 'book not found' });
+    }
+
+    try {
+      const copy = await models.Copy.create({ userId, bookId, condition });
+
+      return res.json({ sucess: true, message: "registration sucessful", copyId: copy.id, userId, bookId });
+
+    } catch (e) {
+
+      const error = {};
+
+      for (let i in e.errors) {
+        error[e.errors[i].validatorKey] = e.errors[i].message;
+      }
+
+      if (Object.keys(error).length > 0) {
+        return res.status(400).json({ success: false, message: error });
+      } else {
+        return res.status(400).json({ success: false, message: e.toString() });
+      }
+
+    }
 
   }
 
@@ -78,7 +159,7 @@ class UserController {
   }
 
   // @POST /api/users/profilepic
-  static async uploadProfilePic(req, res) {
+  static async addProfilePic(req, res) {
 
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'no image provided' });
@@ -170,7 +251,7 @@ class UserController {
         address: { city, district, postalCode, street, houseNumber }
       }, { include: models.Address });
 
-      return res.json({ success: true, message: 'registration successful', id: user.id });
+      return res.json({ success: true, message: 'registration successful', userId: user.id });
 
     } catch (e) {
       const error = {};
