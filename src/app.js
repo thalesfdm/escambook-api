@@ -1,4 +1,5 @@
 import express, { json } from 'express';
+import cors from 'cors';
 import morgan from 'morgan';
 import { cloudinaryConfig } from './cloudinary';
 import setRoutes from './routes';
@@ -12,6 +13,7 @@ class App {
 
   setup() {
     this.app.use(json());
+    this.app.use(cors({ origin: process.env.ALLOWED_ORIGIN }));
     this.app.use(morgan('dev'));
     this.app.use('*', cloudinaryConfig);
     setRoutes(this.app);

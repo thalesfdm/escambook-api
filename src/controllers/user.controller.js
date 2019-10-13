@@ -221,7 +221,7 @@ class UserController {
         email: Joi.string().email().max(40).required(),
         password: Joi.string().min(4).max(16).required(),
         name: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(4).max(60).required(),
-        birthDate: Joi.date().less(maxDate),
+        birthDate: Joi.date().less(maxDate).required(),
         phone: Joi.string().length(13),
         city: Joi.string().min(4).max(60).required(),
         district: Joi.string().length(2).required(),
