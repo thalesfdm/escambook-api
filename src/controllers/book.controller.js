@@ -41,7 +41,7 @@ class BookController {
         isbn: Joi.string().length(13).required(),
         publisher: Joi.string().min(2).max(60),
         edition: Joi.number().integer(),
-        publicationYear: Joi.date(),
+        publicationYear: Joi.string().min(4).max(4),
         bookLanguage: Joi.string().min(2).max(30).required()
       }
     )
