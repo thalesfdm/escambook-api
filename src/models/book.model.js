@@ -45,8 +45,8 @@ export default (sequelize, DataTypes) => {
 
     publicationYear: {
       field: 'pubyear',
-      type: DataTypes.DATEONLY,
-      validate: { isDate: true }
+      type: DataTypes.STRING,
+      validate: { len: [4, 4] }
     },
 
     bookLanguage: {
