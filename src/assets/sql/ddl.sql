@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS copies CASCADE;
 CREATE TABLE users (
   PRIMARY KEY (userId),
   userId        SERIAL,
+  cpf           VARCHAR(11)   NOT NULL UNIQUE,
   email         VARCHAR(40)   NOT NULL UNIQUE,
   passwordHash  VARCHAR(60)   NOT NULL,
   fullName      VARCHAR(60)   NOT NULL,
