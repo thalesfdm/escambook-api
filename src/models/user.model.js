@@ -13,12 +13,6 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.UUID, autoIncrement: true, primaryKey: true
     },
 
-    cpf: {
-      field: 'cpf',
-      type: DataTypes.STRING, unique: true, allowNull: false,
-      validate: { len: [11, 11] }
-    },
-
     email: {
       field: 'email',
       type: DataTypes.STRING, unique: true, allowNull: false,
@@ -30,7 +24,13 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING, allowNull: false,
       validate: { len: [2, 256] }
     },
-
+  
+    cpf: {
+      field: 'cpf',
+      type: DataTypes.STRING, unique: true, allowNull: false,
+      validate: { isNumeric: true, len: [11, 11] }
+    },
+    
     name: {
       field: 'fullname',
       type: DataTypes.STRING, allowNull: false,
