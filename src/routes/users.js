@@ -21,4 +21,10 @@ router.post('/login', UserController.login);
 router.post('/profilepic', auth, multerUploads, UserController.addProfilePic);
 router.post('/register', UserController.register);
 
+// @DELETE /api/users/books/:copyId
+
+router.delete('/books/:copyId', auth, UserController.delCopy);
+
+
+
 export default router;
