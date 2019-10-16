@@ -69,7 +69,7 @@ CREATE TABLE books (
   isbn          VARCHAR(13)   NOT NULL UNIQUE,
   publisher     VARCHAR(60),
   editionNumber INTEGER,
-  pubYear       VARCHAR(4),
+  pubYear       INTEGER,
   bookLanguage  VARCHAR(30)   NOT NULL,
   coverPic      VARCHAR(200),
   createdAt     TIMESTAMP     NOT NULL,
