@@ -11,6 +11,7 @@ CREATE TABLE users (
   userId        SERIAL,
   email         VARCHAR(40)   NOT NULL UNIQUE,
   passwordHash  VARCHAR(60)   NOT NULL,
+  cpf           VARCHAR(11)   NOT NULL UNIQUE,
   fullName      VARCHAR(60)   NOT NULL,
   birthDate     DATE          NOT NULL,
   phone         VARCHAR(13)   UNIQUE,

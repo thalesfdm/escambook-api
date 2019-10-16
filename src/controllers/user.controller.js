@@ -220,6 +220,7 @@ class UserController {
       {
         email: Joi.string().email().max(40).required(),
         password: Joi.string().min(4).max(16).required(),
+        cpf: Joi.string().min(11).max(11).required(),
         name: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(4).max(60).required(),
         birthDate: Joi.date().less(maxDate).required(),
         phone: Joi.string().length(13),
@@ -235,7 +236,7 @@ class UserController {
       return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
-    const { email, password, name, birthDate, phone, city, district, postalCode, street, houseNumber } = req.body;
+    const { email, password, cpf, name, birthDate, phone, city, district, postalCode, street, houseNumber } = req.body;
     const user = await models.User.findOne({ where: { email } });
 
     if (user) {
@@ -247,7 +248,7 @@ class UserController {
       const hash = await bcrypt.hash(password, saltRounds);
 
       const user = await models.User.create({
-        email, password: hash, name, birthDate, phone,
+        email, password: hash, cpf, name, birthDate, phone,
         address: { city, district, postalCode, street, houseNumber }
       }, { include: models.Address });
 
