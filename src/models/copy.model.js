@@ -8,7 +8,7 @@ export default (sequelize, DataTypes) => {
 
   Copy.init({
 
-    copyId: {
+    id: {
       field: 'copyid',
       type: DataTypes.UUID, autoIncrement: true, primaryKey: true
     },
