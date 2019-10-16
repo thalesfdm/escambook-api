@@ -45,8 +45,8 @@ export default (sequelize, DataTypes) => {
 
     publicationYear: {
       field: 'pubyear',
-      type: DataTypes.DATEONLY,
-      validate: { isDate: true }
+      type: DataTypes.INTEGER,
+      validate: { min: 1000 }
     },
 
     bookLanguage: {
@@ -67,7 +67,17 @@ export default (sequelize, DataTypes) => {
 
   }, {
     sequelize,
-    modelName: 'books'
+    modelName: 'books',
+    hooks: {
+      beforeCreate: function (book, options) {
+        let yearCheck = new Date();
+        yearCheck = yearCheck.getFullYear();
+        let pubYear = book.publicationYear;
+        if (pubYear > yearCheck) {
+          throw new Error(`max publicationYear is ${yearCheck}`);
+        }
+      }
+    }
   });
 
   return Book;

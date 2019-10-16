@@ -33,6 +33,9 @@ class BookController {
 
   // @POST /api/books/register
   static async registerBook(req, res) {
+    
+    const today = new Date();
+    const maxPubYear = today.getFullYear();
 
     const { error } = Joi.validate(req.body,
       {
@@ -41,7 +44,7 @@ class BookController {
         isbn: Joi.string().length(13).required(),
         publisher: Joi.string().min(2).max(60),
         edition: Joi.number().integer(),
-        publicationYear: Joi.date(),
+        publicationYear: Joi.number().min(1000).max(maxPubYear),
         bookLanguage: Joi.string().min(2).max(30).required()
       }
     )
