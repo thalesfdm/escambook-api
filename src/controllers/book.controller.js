@@ -3,6 +3,17 @@ import Joi from '@hapi/joi';
 
 class BookController {
 
+  // @GET /api/books/
+  static async getAll(req, res) {
+    const books = await models.Book.findAll();
+
+    if (!books || books.length === 0) {
+      return res.status(400).json({ success: false, message: 'no books were found' });
+    }
+
+    return res.json({ success: true, message: 'listing all books', books });
+  }
+
   // @GET /api/books/:bookId
   static async getById(req, res) {
     const { error } = Joi.validate(req.params,
@@ -33,7 +44,7 @@ class BookController {
 
   // @POST /api/books/register
   static async registerBook(req, res) {
-    
+
     const today = new Date();
     const maxPubYear = today.getFullYear();
 
