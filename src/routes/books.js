@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import BookController from '../controllers/book.controller';
+import { auth } from '../middleware/auth';
 
 const router = new Router();
 
@@ -9,8 +10,8 @@ const router = new Router();
 router.get('/', BookController.getAll);
 router.get('/:bookId', BookController.getById);
 
-//@POST /api/books/register
+// @POST # /api/books/register
 
-router.post('/register', BookController.registerBook);
+router.post('/register', auth, BookController.registerBook);
 
 export default router;

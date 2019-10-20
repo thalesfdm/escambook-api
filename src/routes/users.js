@@ -11,20 +11,14 @@ const router = new Router();
 router.get('/:userId', UserController.getById);
 router.get('/:userId/books', UserController.getCopies);
 
-// @POST /api/users/books/add   #
 // @POST /api/users/login
-// @POST /api/users/profilepic  #
+// @POST # /api/users/me
+// @POST # /api/users/profilepic
 // @POST /api/users/register
 
-router.post('/books/add', auth, UserController.addCopy);
 router.post('/login', UserController.login);
+router.post('/me', auth, UserController.myProfile);
 router.post('/profilepic', auth, multerUploads, UserController.addProfilePic);
 router.post('/register', UserController.register);
-
-// @DELETE /api/users/books/:copyId
-
-router.delete('/books/:copyId', auth, UserController.delCopy);
-
-
 
 export default router;

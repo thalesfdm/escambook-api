@@ -45,6 +45,7 @@ class UserController {
 
   // @GET /api/users/:userId/books
   static async getCopies(req, res) {
+
     const { error } = Joi.validate(req.params,
       {
         userId: Joi.number().integer()
@@ -69,56 +70,6 @@ class UserController {
         userId: user.id, name: user.name, books: user.copies
       }
     });
-
-  }
-
-  // @POST /api/users/books/add
-  static async addCopy(req, res) {
-
-    const userId = req.user.userId;
-
-    if (!userId) {
-      return res.status(400).json({ success: false, message: 'invalid authentication' });
-    }
-
-    const { error } = Joi.validate(req.body,
-      {
-        bookId: Joi.number().integer().required(),
-        condition: Joi.string().min(2).max(40).required()
-      }
-    );
-
-    if (error) {
-      return res.status(400).json({ success: false, message: error.details[0].message });
-    }
-
-    const { bookId, condition } = req.body;
-    const book = await models.Book.findOne({ where: { id: bookId } });
-
-    if (!book) {
-      return res.status(400).json({ success: false, message: 'book not found' });
-    }
-
-    try {
-      const copy = await models.Copy.create({ userId, bookId, condition });
-
-      return res.json({ sucess: true, message: "registration sucessful", copyId: copy.id, userId, bookId });
-      
-    } catch (e) {
-
-      const error = {};
-
-      for (let i in e.errors) {
-        error[e.errors[i].validatorKey] = e.errors[i].message;
-      }
-
-      if (Object.keys(error).length > 0) {
-        return res.status(400).json({ success: false, message: error });
-      } else {
-        return res.status(400).json({ success: false, message: e.toString() });
-      }
-
-    }
 
   }
 
@@ -155,6 +106,37 @@ class UserController {
     } catch (e) {
       return res.status(400).json({ success: false, message: 'something went wrong' });
     }
+
+  }
+
+  // @POST /api/users/me
+  static async myProfile(req, res) {
+
+    const id = req.user.userId;
+
+    if (!id) {
+      return res.status(400).json({ success: false, message: 'invalid authentication' });
+    }
+
+    const user = await models.User.findOne({ where: { id }, include: [models.Image] });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'there is no user with such id' });
+    }
+
+    let profilepic = '';
+
+    if (user.image) {
+      profilepic = user.image.cloudImage;
+    }
+
+    const { email, name, createdAt, updatedAt } = user;
+
+    return res.json({
+      success: true, message: 'user found in database', user: {
+        userId: id, email, name, profilepic, createdAt, updatedAt
+      }
+    });
 
   }
 
@@ -255,55 +237,6 @@ class UserController {
       return res.json({ success: true, message: 'registration successful', userId: user.id });
 
     } catch (e) {
-      const error = {};
-
-      for (let i in e.errors) {
-        error[e.errors[i].validatorKey] = e.errors[i].message;
-      }
-
-      if (Object.keys(error).length > 0) {
-        return res.status(400).json({ success: false, message: error });
-      } else {
-        return res.status(400).json({ success: false, message: e.toString() });
-      }
-
-    }
-
-  }
-  
-  // @DELETE /api/users/books/:copyId
-  static async delCopy(req, res) {
-
-    const userId = req.user.userId;
-
-    if (!userId) {
-      return res.status(400).json({ success: false, message: 'invalid authentication' });
-    }
-
-    const { error } = Joi.validate(req.params,
-      {
-        copyId: Joi.number().integer().required(),
-      }
-    );
-
-    if (error) {
-      return res.status(400).json({ success: false, message: error.details[0].message });
-    }
-
-    const copyId = req.params.copyId;
-    const copy = await models.Copy.findOne({ where: { id: copyId, userId } });
-
-    if (!copy) {
-      return res.status(400).json({ success: false, message: 'invalid copy or user' });
-    }
-
-    try {
-      await models.Copy.destroy({ where: { id: copyId } }); 
-
-      return res.json({ sucess: true, message: 'copy succesfully removed', removed: copy});
-      
-    } catch (e) {
-
       const error = {};
 
       for (let i in e.errors) {

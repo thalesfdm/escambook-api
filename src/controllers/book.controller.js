@@ -5,6 +5,7 @@ class BookController {
 
   // @GET /api/books/
   static async getAll(req, res) {
+
     const books = await models.Book.findAll();
 
     if (!books || books.length === 0) {
@@ -12,10 +13,12 @@ class BookController {
     }
 
     return res.json({ success: true, message: 'listing all books', books });
+
   }
 
   // @GET /api/books/:bookId
   static async getById(req, res) {
+
     const { error } = Joi.validate(req.params,
       {
         bookId: Joi.number().integer()
@@ -40,6 +43,7 @@ class BookController {
         bookId: id, title, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt
       }
     });
+
   }
 
   // @POST /api/books/register
@@ -72,7 +76,9 @@ class BookController {
     }
 
     try {
-      const newBook = await models.Book.create({ title, author, isbn, publisher, edition, publicationYear, bookLanguage });
+      const newBook = await models.Book.create({
+        title, author, isbn, publisher, edition, publicationYear, bookLanguage
+      });
 
       return res.json({ sucess: true, message: "registration sucessful", bookId: newBook.id });
 
@@ -88,8 +94,11 @@ class BookController {
       } else {
         return res.status(400).json({ sucess: false, message: e.toString() });
       }
+
     }
+
   }
+
 }
 
 export default BookController;
