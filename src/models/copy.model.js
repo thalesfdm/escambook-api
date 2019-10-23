@@ -29,6 +29,11 @@ export default (sequelize, DataTypes) => {
       validate: { len: [2, 40] }
     },
 
+    available: {
+      field: 'available',
+      type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true
+    },
+
     createdAt: {
       field: 'createdat',
       type: DataTypes.DATE, allowNull: false

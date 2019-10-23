@@ -83,6 +83,7 @@ CREATE TABLE copies (
   ownerId       INTEGER       NOT NULL,
   bookId        INTEGER       NOT NULL,
   condition     VARCHAR(30)   NOT NULL,
+  available     BOOLEAN       NOT NULL DEFAULT TRUE,
   createdAt     TIMESTAMP     NOT NULL,
   updatedAt     TIMESTAMP     NOT NULL,
   FOREIGN KEY (ownerId) REFERENCES users (userId)
