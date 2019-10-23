@@ -12,4 +12,8 @@ router.post('/add', auth, CopyController.addCopy);
 
 router.delete('/:copyId', auth, CopyController.delCopy);
 
+// @PUT # /api/users/books/tag
+
+router.put('/:copyId', auth, CopyController.tagCopy);
+
 export default router;
