@@ -102,7 +102,7 @@ class CopyController {
 
   }
 
-  // @PUT /api/users/books/tag
+  // @PUT /api/users/books/:copyId/tag
   static async tagCopy(req, res) {
 
     const userId = req.user.userId;
@@ -133,10 +133,12 @@ class CopyController {
       const available = !copy.available;
 
       
-      await models.copy.update({ available }, { where: { id: copyId } });
+      await models.Copy.update({ available }, { where: { id: copyId  } });
       
 
-      return res.json({ sucess: true, message: 'succesfully tagged' });
+      return res.json({ sucess: true, message: 'succesfully tagged', Copy:{
+        copyId, available
+      }});
 
     } catch (e) {
 
