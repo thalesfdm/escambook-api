@@ -55,6 +55,11 @@ export default (sequelize, DataTypes) => {
       validate: { len: [2, 30] }
     },
 
+    imageId: {
+      field: 'coverpic',
+      type: DataTypes.INTEGER, unique: true
+    },
+
     createdAt: {
       field: 'createdat',
       type: DataTypes.DATE, allowNull: false

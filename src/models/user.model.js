@@ -24,13 +24,13 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING, allowNull: false,
       validate: { len: [2, 256] }
     },
-  
+
     cpf: {
       field: 'cpf',
       type: DataTypes.STRING, unique: true, allowNull: false,
       validate: { isNumeric: true, len: [11, 11] }
     },
-    
+
     name: {
       field: 'fullname',
       type: DataTypes.STRING, allowNull: false,
@@ -51,7 +51,7 @@ export default (sequelize, DataTypes) => {
 
     imageId: {
       field: 'profilepic',
-      type: DataTypes.STRING, unique: true
+      type: DataTypes.INTEGER, unique: true
     },
 
     createdAt: {

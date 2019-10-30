@@ -1,5 +1,7 @@
 import models from "../models";
 import Joi from '@hapi/joi';
+import { dataUri } from '../middleware/multer';
+import { v2 } from 'cloudinary/lib/cloudinary';
 
 class BookController {
 
@@ -43,6 +45,73 @@ class BookController {
         bookId: id, title, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt
       }
     });
+
+  }
+
+  // @POST /api/books/coverpic
+  static async addCoverPic(req, res) {
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'no image provided' });
+    }
+
+    const userId = req.user.userId;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'invalid authentication' });
+    }
+
+    const bookId = req.body.bookId;
+
+    const { error } = Joi.validate(req.body,
+      {
+        bookId: Joi.number().integer().required()
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const user = await models.User.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'there is no user with such id' });
+    }
+
+    const book = await models.Book.findOne({ where: { id: bookId } });
+
+    if (!book) {
+      return res.status(400).json({ success: false, message: 'there is no book with such id' });
+    }
+
+    const file = dataUri(req).content;
+
+    try {
+      const result = await v2.uploader.upload(file,
+        {
+          allowed_formats: ['jpg', 'png'],
+          folder: 'coverpic',
+          public_id: `book-${bookId}-coverpic`
+        });
+
+      const cloudImage = result.url;
+
+      let image = {};
+
+      if (book.imageId) {
+        image = await models.Image.findOne({ where: { id: book.imageId } });
+        await models.Image.update({ cloudImage }, { where: { id: book.imageId } });
+      } else {
+        image = await models.Image.create({ userId, cloudImage });
+        await models.Book.update({ imageId: image.id }, { where: { id: bookId } });
+      }
+
+      return res.json({ success: true, message: 'image uploaded', bookId, cloudImage });
+
+    } catch (e) {
+      return res.status(400).json({ success: false, message: 'could not upload image' });
+    }
 
   }
 

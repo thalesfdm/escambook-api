@@ -71,7 +71,7 @@ CREATE TABLE books (
   editionNumber INTEGER,
   pubYear       INTEGER,
   bookLanguage  VARCHAR(30)   NOT NULL,
-  coverPic      VARCHAR(200),
+  coverPic      INTEGER,
   createdAt     TIMESTAMP     NOT NULL,
   updatedAt     TIMESTAMP     NOT NULL
 );
