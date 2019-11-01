@@ -7,15 +7,15 @@ const router = new Router();
 
 // @GET /api/books/
 // @GET /api/books/:bookId
-// @GET /api/books/:title/titulo
-// @GET /api/books/:isbn/isbn
-// @GET /api/books/:author/author
+// @GET /api/books/search/author/:author
+// @GET /api/books/search/isbn/:isbn
+// @GET /api/books/search/title/:title
 
 router.get('/', BookController.getAll);
 router.get('/:bookId', BookController.getById);
-router.get('/:title/titulo', BookController.getByTitle);
-router.get('/:isbn/isbn', BookController.getByIsbn);
-router.get('/:author/author', BookController.getByAuthor);
+router.get('/search/author/:author', BookController.getByAuthor);
+router.get('/search/isbn/:isbn', BookController.getByIsbn);
+router.get('/search/title/:title', BookController.getByTitle);
 
 // @POST # /api/books/coverpic
 // @POST # /api/books/register
