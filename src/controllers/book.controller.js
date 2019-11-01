@@ -48,6 +48,91 @@ class BookController {
 
   }
 
+   // @GET /api/books/:title/titulo
+   static async getByTitle(req, res) {
+
+    const { error } = Joi.validate(req.params,
+      {
+        title: Joi.string().min(1).max(200)
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const title = req.params.title;
+    const book = await models.Book.findOne({ where: { title } });
+
+    if (!book) {
+      return res.status(400).json({ success: false, message: 'there is no book with such title ' });
+    }
+
+    const { id, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt } = book;
+
+    return res.json({
+      success: true, message: 'book found in database', book: {
+        bookId: id, title, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt
+      }
+    });
+
+  }
+
+  // @GET /api/books/:isbn/isbn
+  static async getByIsbn(req, res) {
+
+    const { error } = Joi.validate(req.params,
+      {
+        isbn: Joi.string().length(13)
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const isbn = req.params.isbn;
+    const book = await models.Book.findOne({ where: { isbn } });
+
+    if (!book) {
+      return res.status(400).json({ success: false, message: 'there is no book with such isbn' });
+    }
+
+    const { id, title, author, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt } = book;
+
+    return res.json({
+      success: true, message: 'book found in database', book: {
+        bookId: id, title, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt
+      }
+    });
+
+  }
+
+  // @GET /api/books/:author/author
+  static async getByAuthor(req, res) {
+
+    const { error } = Joi.validate(req.params,
+      {
+        author: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(2).max(60)
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const author = req.params.author;
+    const books = await models.Book.findAll({ where: { author } });
+
+    if (!books || books.length === 0) {
+      return res.status(400).json({ success: false, message: 'no books were found' });
+    }
+
+    return res.json({
+      success: true, message: 'book found in database', books });
+
+  }
+
   // @POST /api/books/coverpic
   static async addCoverPic(req, res) {
 
