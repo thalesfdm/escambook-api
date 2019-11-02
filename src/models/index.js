@@ -8,12 +8,17 @@ models.Copy = sequelize.import('./copy.model');
 models.Image = sequelize.import('./image.model');
 models.User = sequelize.import('./user.model');
 
-models.Book.hasOne(models.Copy); // bookId
-models.Image.hasOne(models.User); // profilepic
-models.User.hasOne(models.Address);
-models.User.hasOne(models.Image); // uploaderid
-
+models.Book.belongsTo(models.Image); // coverpic
 models.Book.hasMany(models.Copy);
+
+models.Copy.belongsTo(models.Book);
+
+models.Image.belongsTo(models.User); // uploaderid
+
+models.User.hasOne(models.Address);
+models.User.belongsTo(models.Image); // profilepic
 models.User.hasMany(models.Copy);
+
+models.Op = sequelize.Op;
 
 export default models;

@@ -8,12 +8,13 @@ const router = new Router();
 
 router.post('/add', auth, CopyController.addCopy);
 
+// @PUT # /api/users/books/:copyId/available
+
+router.put('/:copyId/available', auth, CopyController.tagAvailable);
+
 // @DELETE # /api/users/books/:copyId
 
 router.delete('/:copyId', auth, CopyController.delCopy);
 
-// @PUT # /api/users/books/:copyId/available
-
-router.put('/:copyId/available', auth, CopyController.tagAvailable);
 
 export default router;

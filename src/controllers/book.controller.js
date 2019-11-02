@@ -8,7 +8,7 @@ class BookController {
   // @GET /api/books/
   static async getAll(req, res) {
 
-    const books = await models.Book.findAll();
+    const books = await models.Book.findAll({ include: [models.Image] });
 
     if (!books || books.length === 0) {
       return res.status(400).json({ success: false, message: 'no books were found' });
@@ -32,44 +32,30 @@ class BookController {
     }
 
     const id = req.params.bookId;
-    const book = await models.Book.findOne({ where: { id } });
+    const book = await models.Book.findOne({ where: { id }, include: [models.Image] });
 
     if (!book) {
       return res.status(400).json({ success: false, message: 'there is no book with such id' });
     }
 
-    const { title, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt } = book;
-
-    return res.json({
-      success: true, message: 'book found in database', book: {
-        bookId: id, title, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt
-      }
-    });
+    return res.json({ success: true, message: 'book found in database', book });
 
   }
-  
+
   // @GET /api/books/search/author/:author
   static async getByAuthor(req, res) {
 
-    const { error } = Joi.validate(req.params,
-      {
-        author: Joi.string().regex(/^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$/).min(2).max(60)
-      }
-    );
-
-    if (error) {
-      return res.status(400).json({ success: false, message: error.details[0].message });
-    }
-
     const author = req.params.author;
-    const books = await models.Book.findAll({ where: { author } });
+
+    const books = await models.Book.findAll({
+      where: { author: { [models.Op.iRegexp]: author } }, include: [models.Image]
+    });
 
     if (!books || books.length === 0) {
       return res.status(400).json({ success: false, message: 'no books were found' });
     }
 
-    return res.json({
-      success: true, message: 'book found in database', books });
+    return res.json({ success: true, message: 'books found in database', books });
 
   }
 
@@ -87,49 +73,30 @@ class BookController {
     }
 
     const isbn = req.params.isbn;
-    const book = await models.Book.findOne({ where: { isbn } });
+    const book = await models.Book.findOne({ where: { isbn }, include: [models.Image] });
 
     if (!book) {
       return res.status(400).json({ success: false, message: 'there is no book with such isbn' });
     }
 
-    const { id, title, author, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt } = book;
-
-    return res.json({
-      success: true, message: 'book found in database', book: {
-        bookId: id, title, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt
-      }
-    });
+    return res.json({ success: true, message: 'book found in database', book });
 
   }
-  
+
   // @GET /api/books/search/title/:title
-   static async getByTitle(req, res) {
-
-    const { error } = Joi.validate(req.params,
-      {
-        title: Joi.string().min(1).max(200)
-      }
-    );
-
-    if (error) {
-      return res.status(400).json({ success: false, message: error.details[0].message });
-    }
+  static async getByTitle(req, res) {
 
     const title = req.params.title;
-    const book = await models.Book.findOne({ where: { title } });
 
-    if (!book) {
-      return res.status(400).json({ success: false, message: 'there is no book with such title ' });
+    const books = await models.Book.findAll({
+      where: { title: { [models.Op.iRegexp]: title } }, include: [models.Image]
+    });
+
+    if (!books || books.length === 0) {
+      return res.status(400).json({ success: false, message: 'no books were found' });
     }
 
-    const { id, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt } = book;
-
-    return res.json({
-      success: true, message: 'book found in database', book: {
-        bookId: id, title, author, isbn, publisher, edition, publicationYear, bookLanguage, createdAt, updatedAt
-      }
-    });
+    return res.json({ success: true, message: 'books found in database', books });
 
   }
 

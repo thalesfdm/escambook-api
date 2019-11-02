@@ -20,4 +20,6 @@ const sequelize = new Sequelize(
   }
 );
 
+sequelize.Op = Sequelize.Op;
+
 export default sequelize;

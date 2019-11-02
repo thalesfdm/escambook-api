@@ -16,8 +16,8 @@ CREATE TABLE users (
   birthDate     DATE          NOT NULL,
   phone         VARCHAR(13)   UNIQUE,
   profilePic    INTEGER,
-  createdAt     TIMESTAMP     NOT NULL,
-  updatedAt     TIMESTAMP     NOT NULL
+  createdAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -39,8 +39,8 @@ CREATE TABLE images (
   imageId       SERIAL,
   uploaderId    INTEGER       NOT NULL,
   cloudImage    VARCHAR(200)  NOT NULL,
-  createdAt     TIMESTAMP     NOT NULL,
-  updatedAt     TIMESTAMP     NOT NULL,
+  createdAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (uploaderId) REFERENCES users (userId)
     ON DELETE NO ACTION ON UPDATE CASCADE
 );
@@ -72,8 +72,10 @@ CREATE TABLE books (
   pubYear       INTEGER,
   bookLanguage  VARCHAR(30)   NOT NULL,
   coverPic      INTEGER,
-  createdAt     TIMESTAMP     NOT NULL,
-  updatedAt     TIMESTAMP     NOT NULL
+  createdAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (coverPic) REFERENCES images (imageId)
+    ON DELETE NO ACTION ON UPDATE CASCADE
 );
 
 
@@ -84,8 +86,8 @@ CREATE TABLE copies (
   bookId        INTEGER       NOT NULL,
   condition     VARCHAR(30)   NOT NULL,
   available     BOOLEAN       NOT NULL DEFAULT TRUE,
-  createdAt     TIMESTAMP     NOT NULL,
-  updatedAt     TIMESTAMP     NOT NULL,
+  createdAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (ownerId) REFERENCES users (userId)
     ON DELETE NO ACTION ON UPDATE CASCADE,
   FOREIGN KEY (bookId) REFERENCES books (bookId)

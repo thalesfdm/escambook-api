@@ -7,6 +7,25 @@ import { v2 } from 'cloudinary/lib/cloudinary';
 
 class UserController {
 
+  // @GET /api/users/me
+  static async myProfile(req, res) {
+
+    const id = req.user.userId;
+
+    if (!id) {
+      return res.status(400).json({ success: false, message: 'invalid authentication' });
+    }
+
+    let user = await models.User.findOne({ where: { id }, include: [models.Address, models.Image] });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'there is no user with such id' });
+    }
+
+    return res.json({ success: true, message: 'user found in database', user });
+
+  }
+
   // @GET /api/users/:userId
   static async getById(req, res) {
 
@@ -21,23 +40,18 @@ class UserController {
     }
 
     const id = req.params.userId;
-    const user = await models.User.findOne({ where: { id }, include: [models.Image] });
+    const user = await models.User.findOne({ where: { id }, include: [models.Address, models.Image] });
 
     if (!user) {
       return res.status(400).json({ success: false, message: 'there is no user with such id' });
     }
 
-    let profilepic = '';
-
-    if (user.image) {
-      profilepic = user.image.cloudImage;
-    }
-
     const { name, createdAt, updatedAt } = user;
+    const { city, district } = user.address;
 
     return res.json({
       success: true, message: 'user found in database', user: {
-        userId: id, name, profilepic, createdAt, updatedAt
+        id, name, createdAt, updatedAt, address: { city, district }, image: user.image
       }
     });
 
@@ -57,17 +71,17 @@ class UserController {
     }
 
     const id = req.params.userId;
-    const user = await models.User.findOne({
-      where: { id }, include: [models.Copy]
-    });
+    const user = await models.User.findOne({ where: { id }, include: [models.Copy] });
 
     if (!user) {
       return res.status(400).json({ success: false, message: 'there is no user with such id' });
     }
 
+    const { name, createdAt, updatedAt } = user;
+
     return res.json({
       success: true, message: 'user found in database', user: {
-        userId: user.id, name: user.name, books: user.copies
+        id, name, createdAt, updatedAt, books: user.copies
       }
     });
 
@@ -106,37 +120,6 @@ class UserController {
     } catch (e) {
       return res.status(400).json({ success: false, message: 'something went wrong' });
     }
-
-  }
-
-  // @POST /api/users/me
-  static async myProfile(req, res) {
-
-    const id = req.user.userId;
-
-    if (!id) {
-      return res.status(400).json({ success: false, message: 'invalid authentication' });
-    }
-
-    const user = await models.User.findOne({ where: { id }, include: [models.Image] });
-
-    if (!user) {
-      return res.status(400).json({ success: false, message: 'there is no user with such id' });
-    }
-
-    let profilepic = '';
-
-    if (user.image) {
-      profilepic = user.image.cloudImage;
-    }
-
-    const { email, name, createdAt, updatedAt } = user;
-
-    return res.json({
-      success: true, message: 'user found in database', user: {
-        userId: id, email, name, profilepic, createdAt, updatedAt
-      }
-    });
 
   }
 
