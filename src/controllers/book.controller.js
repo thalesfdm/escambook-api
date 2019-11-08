@@ -18,30 +18,6 @@ class BookController {
 
   }
 
-  // @GET /api/books/:bookId
-  static async getById(req, res) {
-
-    const { error } = Joi.validate(req.params,
-      {
-        bookId: Joi.number().integer()
-      }
-    );
-
-    if (error) {
-      return res.status(400).json({ success: false, message: error.details[0].message });
-    }
-
-    const id = req.params.bookId;
-    const book = await models.Book.findOne({ where: { id }, include: [models.Image] });
-
-    if (!book) {
-      return res.status(400).json({ success: false, message: 'there is no book with such id' });
-    }
-
-    return res.json({ success: true, message: 'book found in database', book });
-
-  }
-
   // @GET /api/books/search/author/:author
   static async getByAuthor(req, res) {
 
@@ -100,7 +76,31 @@ class BookController {
 
   }
 
-  // @POST /api/books/coverpic
+  // @GET /api/books/:bookId
+  static async getById(req, res) {
+
+    const { error } = Joi.validate(req.params,
+      {
+        bookId: Joi.number().integer()
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const id = req.params.bookId;
+    const book = await models.Book.findOne({ where: { id }, include: [models.Image] });
+
+    if (!book) {
+      return res.status(400).json({ success: false, message: 'there is no book with such id' });
+    }
+
+    return res.json({ success: true, message: 'book found in database', book });
+
+  }
+
+  // @POST # /api/books/coverpic
   static async addCoverPic(req, res) {
 
     if (!req.file) {
@@ -167,7 +167,7 @@ class BookController {
 
   }
 
-  // @POST /api/books/register
+  // @POST # /api/books/register
   static async registerBook(req, res) {
 
     const today = new Date();

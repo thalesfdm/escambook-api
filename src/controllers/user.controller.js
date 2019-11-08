@@ -7,7 +7,7 @@ import { v2 } from 'cloudinary/lib/cloudinary';
 
 class UserController {
 
-  // @GET /api/users/me
+  // @GET # /api/users/me
   static async myProfile(req, res) {
 
     const id = req.user.userId;
@@ -71,7 +71,13 @@ class UserController {
     }
 
     const id = req.params.userId;
-    const user = await models.User.findOne({ where: { id }, include: [models.Copy] });
+    const user = await models.User.findOne({
+      where: { id }, include: [{
+        model: models.Copy, include: [{
+          model: models.CopyPic, include: models.Image
+        }]
+      }]
+    });
 
     if (!user) {
       return res.status(400).json({ success: false, message: 'there is no user with such id' });
@@ -123,7 +129,7 @@ class UserController {
 
   }
 
-  // @POST /api/users/profilepic
+  // @POST # /api/users/profilepic
   static async addProfilePic(req, res) {
 
     if (!req.file) {

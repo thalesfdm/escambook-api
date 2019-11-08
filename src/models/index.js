@@ -5,6 +5,7 @@ const models = {};
 models.Address = sequelize.import('./address.model');
 models.Book = sequelize.import('./book.model');
 models.Copy = sequelize.import('./copy.model');
+models.CopyPic = sequelize.import('./copypic.model');
 models.Image = sequelize.import('./image.model');
 models.User = sequelize.import('./user.model');
 
@@ -12,6 +13,9 @@ models.Book.belongsTo(models.Image); // coverpic
 models.Book.hasMany(models.Copy);
 
 models.Copy.belongsTo(models.Book);
+models.Copy.hasMany(models.CopyPic);
+
+models.CopyPic.belongsTo(models.Image);
 
 models.Image.belongsTo(models.User); // uploaderid
 

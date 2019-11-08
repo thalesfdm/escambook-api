@@ -86,4 +86,5 @@ export default (sequelize, DataTypes) => {
   });
 
   return Book;
+
 }

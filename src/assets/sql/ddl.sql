@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS images CASCADE;
 DROP TABLE IF EXISTS userFollows CASCADE;
 DROP TABLE IF EXISTS books CASCADE;
 DROP TABLE IF EXISTS copies CASCADE;
+DROP TABLE IF EXISTS copyPics CASCADE;
 
 
 CREATE TABLE users (
@@ -95,6 +96,31 @@ CREATE TABLE copies (
 );
 
 
+CREATE TABLE copyPics (
+  PRIMARY KEY (copyId, copyPic),
+  copyId        INTEGER,
+  copyPic       INTEGER,
+  FOREIGN KEY (copyId) REFERENCES copies (copyId)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (copyPic) REFERENCES images (imageId)
+    ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+CREATE OR REPLACE FUNCTION deleteImages()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    DELETE FROM images WHERE imageId = OLD.copyPic;
+	  RETURN NULL;
+  END;
+$$ LANGUAGE 'plpgsql';
+
+
+CREATE TRIGGER onDeleteCopyPicsDeleteImages
+  AFTER DELETE ON copyPics
+  FOR EACH ROW EXECUTE PROCEDURE deleteImages();
+
+
 -- CREATE TABLE chat (
 --   chatId SERIAL,
 --   createdAt TIMESTAMP,
@@ -121,13 +147,6 @@ CREATE TABLE copies (
 --   PRIMARY KEY (chatMessageId),
 --   FOREIGN KEY (chatId) REFERENCES chat (chatId),
 --   FOREIGN KEY (senderId) REFERENCES users (userId)
--- );
-
-
--- CREATE TABLE copyPic (
---   copyId INTEGER,
---   copyPic VARCHAR(200),
---   FOREIGN KEY (copyId) REFERENCES copys (copyId)
 -- );
 
 

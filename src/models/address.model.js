@@ -41,7 +41,7 @@ export default (sequelize, DataTypes) => {
       field: 'housenumber',
       type: DataTypes.STRING,
       validate: { isNumeric: true, len: [0, 8] }
-    },
+    }
 
   }, {
     sequelize,
