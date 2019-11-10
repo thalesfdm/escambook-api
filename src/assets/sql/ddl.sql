@@ -1,3 +1,5 @@
+DROP FUNCTION IF EXISTS deleteImages() CASCADE;
+DROP TRIGGER IF EXISTS onDeleteCopyPicsDeleteImages ON copyPics CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS addresses CASCADE;
 DROP TABLE IF EXISTS images CASCADE;
@@ -5,6 +7,9 @@ DROP TABLE IF EXISTS userFollows CASCADE;
 DROP TABLE IF EXISTS books CASCADE;
 DROP TABLE IF EXISTS copies CASCADE;
 DROP TABLE IF EXISTS copyPics CASCADE;
+DROP TABLE IF EXISTS swaps CASCADE;
+DROP TABLE IF EXISTS swapUsers CASCADE;
+DROP TABLE IF EXISTS swapCopies CASCADE;
 
 
 CREATE TABLE users (
@@ -121,6 +126,41 @@ CREATE TRIGGER onDeleteCopyPicsDeleteImages
   FOR EACH ROW EXECUTE PROCEDURE deleteImages();
 
 
+CREATE TABLE swaps (
+  PRIMARY KEY (swapId),
+  swapId        SERIAL,
+  category      CHAR(1)       NOT NULL
+    CHECK (category IN ('E', 'T')),
+  situation     CHAR(1)       NOT NULL DEFAULT 'A'
+    CHECK (situation IN ('A', 'C', 'I', 'F')),
+  expiresAt     TIMESTAMP     NOT NULL,
+  createdAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE swapUsers (
+  PRIMARY KEY (swapId, userId),
+  swapId        INTEGER,
+  userId        INTEGER,
+  FOREIGN KEY (swapId) REFERENCES swaps (swapId)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (userId) REFERENCES users (userId)
+    ON DELETE NO ACTION ON UPDATE CASCADE
+);
+
+
+CREATE TABLE swapCopies (
+  PRIMARY KEY (swapId, copyId),
+  swapId        INTEGER,
+  copyId        INTEGER,
+  FOREIGN KEY (swapId) REFERENCES swaps (swapId)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (copyId) REFERENCES copies (copyId)
+    ON DELETE NO ACTION ON UPDATE CASCADE
+);
+
+
 -- CREATE TABLE chat (
 --   chatId SERIAL,
 --   createdAt TIMESTAMP,
@@ -147,30 +187,4 @@ CREATE TRIGGER onDeleteCopyPicsDeleteImages
 --   PRIMARY KEY (chatMessageId),
 --   FOREIGN KEY (chatId) REFERENCES chat (chatId),
 --   FOREIGN KEY (senderId) REFERENCES users (userId)
--- );
-
-
--- CREATE TABLE swap (
---   swapId SERIAL,
---   category VARCHAR(60),
---   endAt TIMESTAMP,
---   createdAt TIMESTAMP,
---   updatedAt TIMESTAMP,
---   PRIMARY KEY(swapId)
--- );
-
-
--- CREATE TABLE swapUser (
---   swapId INTEGER,
---   userId INTEGER,
---   FOREIGN KEY (swapId) REFERENCES swap(swapId),
---   FOREIGN KEY (userId) REFERENCES users(userId)
--- );
-
-
--- CREATE TABLE swapCopy (
---   swapId INTEGER,
---   copyId INTEGER,
---   FOREIGN KEY (swapId) REFERENCES swap(swapId),
---   FOREIGN KEY (copyId) REFERENCES copys(copyId)
 -- );
