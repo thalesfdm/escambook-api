@@ -134,6 +134,147 @@ class SwapController {
 
   }
 
+  // @PUT # /api/swaps/:swapId/cancel
+  static async swapCancel(req, res) {
+
+    const userId = req.user.userId;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'invalid authentication' });
+    }
+
+    const { error } = Joi.validate(req.params,
+      {
+        swapId: Joi.number().integer().required(),
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const swapId = req.params.swapId;
+    const swap = await models.Swap.findOne({
+      where: { id: swapId }, required: true,
+      include: [
+        { model: models.SwapUser, required: true }, {
+          model: models.SwapCopy, required: true, include:
+            { model: models.Copy, required: true }
+        }]
+    });
+
+    if (!swap) {
+      return res.status(400).json({ success: false, message: 'invalid swap' });
+    }
+
+    if (userId != swap.swapuser.userId && userId !=  swap.swapcopy.copy.userId){
+      return res.status(400).json({ success: false, message: 'invalid user' });
+    }
+
+    if (swap.situation != 'A') {
+      return res.status(400).json({ success: false, message: 'invalid swap situation' });
+    }
+
+    try {
+      const situation = 'C';
+
+      await models.Swap.update({ situation }, { where: { id: swapId } });
+
+      return res.json({ success: true, message: 'succesfully cancel', swapId, situation });
+
+    } catch (e) {
+
+      const error = {};
+
+      for (let i in e.errors) {
+        error[e.errors[i].validatorKey] = e.errors[i].message;
+      }
+
+      if (Object.keys(error).length > 0) {
+        return res.status(400).json({ success: false, message: error });
+      } else {
+        return res.status(400).json({ success: false, message: e.toString() });
+      }
+
+    }
+
+  }
+
+  // @POST # /api/swaps/:swapId/accept
+  static async swapAccept(req, res) {
+
+    const userId = req.user.userId;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'invalid authentication' });
+    }
+
+    const { error } = Joi.validate(req.params,
+      {
+        swapId: Joi.number().integer().required(),
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const swapId = req.params.swapId;
+    const swap = await models.Swap.findOne({
+      where: { id: swapId }, required: true,
+      include: [
+        { model: models.SwapUser, required: true }, {
+          model: models.SwapCopy, required: true, include:
+            { model: models.Copy, required: true }
+        }]
+    });
+
+    if (!swap) {
+      return res.status(400).json({ success: false, message: 'invalid swap' });
+    }
+
+    if (userId != swap.swapcopy.copy.userId){
+      return res.status(400).json({ success: false, message: 'invalid owner copy' });
+    }
+
+
+    if (swap.situation != 'A') {
+      return res.status(400).json({ success: false, message: 'invalid swap situation' });
+    }
+
+    try {
+      const newUser = await models.SwapUser.create({
+        swapId,userId
+      });
+
+      const acceptedSwap = await models.Swap.findOne({
+        where: { id: swapId }, required: true,
+        include: [
+          { model: models.SwapUser, required: true }, {
+            model: models.SwapCopy, required: true
+          }]
+      }); 
+
+      return res.json({ sucess: true, message: "sucessful accept swap", swapId: newUser.id, acceptedSwap });
+
+    } catch (e) {
+
+      const error = {};
+
+      for (let i in e.errors) {
+        error[e.errors[i].validatorKey] = e.errors[i].message;
+      }
+
+      if (Object.keys(error).length > 0) {
+        return res.status(400).json({ success: false, message: error });
+      } else {
+        return res.status(400).json({ success: false, message: e.toString() });
+      }
+
+    }
+
+  }
+
 }
 
 export default SwapController;

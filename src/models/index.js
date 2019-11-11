@@ -26,10 +26,10 @@ models.Swap.hasOne(models.SwapCopy);
 models.Swap.hasOne(models.SwapUser);
 
 models.SwapCopy.belongsTo(models.Copy); // copyid
-// models.SwapCopy.belongsTo(models.Swap); // swapid
+//models.SwapCopy.belongsTo(models.Swap); // swapid
 
-// models.SwapUser.belongsTo(models.Swap); // swapid
-// models.SwapUser.belongsTo(models.User); // userid
+//models.SwapUser.belongsTo(models.Swap); // swapid
+//models.SwapUser.belongsTo(models.User); // userid
 
 models.User.hasOne(models.Address);
 models.User.belongsTo(models.Image); // profilepic
