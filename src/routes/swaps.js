@@ -10,8 +10,14 @@ const router = new Router();
 router.get('/pending', auth, SwapController.getPending);
 router.get('/pending/mine', auth, SwapController.getPendingMine);
 
+// @PUT # /api/swaps/:swapId/cancel
+
+router.put('/:swapId/cancel', auth, SwapController.swapCancel);
+
 // @POST # /api/swaps/start
+// @POST # /api/swaps/:swapId/accept
 
 router.post('/start', auth, SwapController.startSwap);
+router.post('/:swapId/accept', auth, SwapController.swapAccept);
 
 export default router;
