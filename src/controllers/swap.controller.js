@@ -251,7 +251,7 @@ class SwapController {
       return res.status(400).json({ success: false, message: 'there is no swap with such id' });
     }
 
-    if (userId != swap.swapusers.userId && userId != swap.swapcopy.copy.userId) {
+    if (userId != swap.swapusers[0].userId && userId != swap.swapcopy.copy.userId) {
       return res.status(400).json({ success: false, message: 'invalid user' });
     }
 
@@ -264,7 +264,7 @@ class SwapController {
 
       await models.Swap.update({ situation }, { where: { id: swapId } });
 
-      return res.json({ success: true, message: 'swap accepted', swapId, situation });
+      return res.json({ success: true, message: 'swap cancelled', swapId, situation });
 
     } catch (e) {
 

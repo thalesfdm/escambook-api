@@ -22,18 +22,19 @@ models.CopyPic.belongsTo(models.Image);
 
 models.Image.belongsTo(models.User); // uploaderid
 
+models.User.belongsToMany(models.Swap, { through: models.SwapUser });
+
 models.Swap.belongsToMany(models.User, { through: models.SwapUser });
+
 models.Swap.hasMany(models.SwapUser);
 models.Swap.hasOne(models.SwapCopy);
 
 models.SwapCopy.belongsTo(models.Copy);
-
 models.SwapUser.belongsTo(models.User);
 
-models.User.belongsToMany(models.Swap, { through: models.SwapUser });
+models.User.hasOne(models.Address);
 models.User.belongsTo(models.Image); // profilepic
 models.User.hasMany(models.Copy);
-models.User.hasOne(models.Address);
 
 models.Op = sequelize.Op;
 

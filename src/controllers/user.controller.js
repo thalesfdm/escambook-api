@@ -7,6 +7,30 @@ import { v2 } from 'cloudinary/lib/cloudinary';
 
 class UserController {
 
+  // @GET /api/users/all/books
+  static async getAllBooks(req, res) {
+    const users = await models.User.findAll({
+      attributes: ['id', 'name'],
+      include: [{
+        model: models.Address, attributes: ['city', 'district']
+      }, {
+        model: models.Image, attributes: ['cloudimage']
+      }, {
+        model: models.Copy, attributes: ['condition', 'available'],
+        include: [{
+          model: models.Book, attributes: ['title', 'author', 'isbn', 'publisher', 'edition', 'publicationYear'],
+          include: [{
+            model: models.Image, attributes: ['cloudimage']
+          }]
+        }]
+      }]
+    });
+
+    return res.json({
+      success: true, message: `${users.length} users found`, users
+    });
+  }
+
   // @GET # /api/users/me
   static async myProfile(req, res) {
 

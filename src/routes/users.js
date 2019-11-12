@@ -5,10 +5,12 @@ import { auth } from '../middleware/auth';
 
 const router = new Router();
 
+// @GET /api/users/all/books
 // @GET # /api/users/me
 // @GET /api/users/:userId
 // @GET /api/users/:userId/books
 
+router.get('/all/books', UserController.getAllBooks);
 router.get('/me', auth, UserController.myProfile);
 router.get('/:userId', UserController.getById);
 router.get('/:userId/books', UserController.getCopies);
