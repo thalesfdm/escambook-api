@@ -1,7 +1,8 @@
 INSERT INTO users (email, passwordHash, cpf, fullName, birthDate, phone) VALUES
 ('thalesfdm@gmail.com', '$2b$10$VGwUxHhWo9rJsYOcg7z5oelyD5k/LYHJHI7sQ.KgsHb9im/1GRyku', '07700442983', 'Thales Felipe Dal Molim', '1992-07-08', '46999760268'),
 ('lucas.gomes@gmail.com', '$2b$10$VGwUxHhWo9rJsYOcg7z5oelyD5k/LYHJHI7sQ.KgsHb9im/1GRyku', '28980777396', 'Lucas Teixeira Gomes', '1997-05-02', '19984767443'),
-('laura.ducati@hotmail.com', '$2b$10$VGwUxHhWo9rJsYOcg7z5oelyD5k/LYHJHI7sQ.KgsHb9im/1GRyku', '17265347668', 'Laura Machado Ducati', '1995-04-04', '19981053707');
+('laura.ducati@hotmail.com', '$2b$10$VGwUxHhWo9rJsYOcg7z5oelyD5k/LYHJHI7sQ.KgsHb9im/1GRyku', '17265347668', 'Laura Machado Ducati', '1995-04-04', '19981053707'),
+('mariacristianesantos_@gmail.com', '$2b$10$VGwUxHhWo9rJsYOcg7z5oelyD5k/LYHJHI7sQ.KgsHb9im/1GRyku', '73851093810', 'Maria Cristiane Santos', '1996-05-18', '77986047482');
 
 INSERT INTO images (uploaderId, cloudImage) VALUES
 ('1', 'https://res.cloudinary.com/escambook/image/upload/v1572642364/profilepic/sample-1-profilepic.jpg'),
@@ -15,7 +16,8 @@ UPDATE users SET profilePic = '3' WHERE userId = '3';
 INSERT INTO addresses (userId, city, district, postalCode, street, houseNumber) VALUES
 ('1', 'Realeza', 'PR', '85770000', 'Rua Belém', '2525'),
 ('2', 'Piracicaba', 'SP', '13405247', 'Travessa Ângelo Valler', '364'),
-('3', 'Campinas', 'SP', '13015180', NULL, NULL);
+('3', 'Campinas', 'SP', '13015180', NULL, NULL),
+('4', 'Barreiras', 'BA', '47800120', 'Rua José de Alencar', NULL);
 
 INSERT INTO images (uploaderId, cloudImage) VALUES
 ('1', 'https://res.cloudinary.com/escambook/image/upload/v1572640546/coverpic/sample-1-coverpic.jpg'),
@@ -54,4 +56,7 @@ INSERT INTO copies (ownerId, bookId, condition) VALUES
 ('3', '8', 'Um pouco amassado, velho'),
 ('3', '9', 'Novo, em boas condições'),
 ('3', '10', 'Arranhado na capa'),
-('1', '11', 'Em boas condições');
+('1', '11', 'Em boas condições'),
+('4', '4', 'Em boas condições'),
+('4', '5', 'Em boas condições'),
+('4', '1', 'Páginas riscadas');
