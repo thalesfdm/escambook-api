@@ -16,7 +16,7 @@ class UserController {
       }, {
         model: models.Image, attributes: ['cloudimage']
       }, {
-        model: models.Copy, attributes: ['condition', 'available'],
+        model: models.Copy, attributes: ['id', 'condition', 'available'],
         include: [{
           model: models.Book, attributes: ['title', 'author', 'isbn', 'publisher', 'edition', 'publicationYear'],
           include: [{
@@ -95,10 +95,20 @@ class UserController {
     }
 
     const id = req.params.userId;
+
     const user = await models.User.findOne({
-      where: { id }, include: [{
-        model: models.Copy, include: [{
-          model: models.CopyPic, include: models.Image
+      where: { id }, attributes: ['id', 'name'],
+      include: [{
+        model: models.Address, attributes: ['city', 'district']
+      }, {
+        model: models.Image, attributes: ['cloudimage']
+      }, {
+        model: models.Copy, attributes: ['id', 'condition', 'available'],
+        include: [{
+          model: models.Book, attributes: ['title', 'author', 'isbn', 'publisher', 'edition', 'publicationYear'],
+          include: [{
+            model: models.Image, attributes: ['cloudimage']
+          }]
         }]
       }]
     });

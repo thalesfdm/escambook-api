@@ -27,7 +27,8 @@ INSERT INTO images (uploaderId, cloudImage) VALUES
 ('2', 'https://res.cloudinary.com/escambook/image/upload/v1572640547/coverpic/sample-7-coverpic.jpg'),
 ('3', 'https://res.cloudinary.com/escambook/image/upload/v1572640547/coverpic/sample-8-coverpic.jpg'),
 ('3', 'https://res.cloudinary.com/escambook/image/upload/v1572640547/coverpic/sample-9-coverpic.jpg'),
-('3', 'https://res.cloudinary.com/escambook/image/upload/v1572640547/coverpic/sample-10-coverpic.jpg');
+('3', 'https://res.cloudinary.com/escambook/image/upload/v1572640547/coverpic/sample-10-coverpic.jpg'),
+('1', 'https://res.cloudinary.com/escambook/image/upload/v1573872234/coverpic/sample-11-coverpic.jpg');
 
 INSERT INTO books (title, author, isbn, publisher, editionNumber, pubYear, bookLanguage, coverPic) VALUES
 ('A República', 'Platão', '9788575568880', 'Escala', '2', '2007', 'pt-br', '4'),
@@ -39,7 +40,8 @@ INSERT INTO books (title, author, isbn, publisher, editionNumber, pubYear, bookL
 ('O Senhor dos Anéis: O Retorno do Rei', 'J. R. R. Tolkien', '9788533613393', 'WMF Martins Fontes', '3', '2000', 'pt-br', '10'),
 ('Crime e Castigo', 'Fiódor Dostoiévski', '9788572325417', 'Martin Claret', '4', '2011', 'pt-br', '11'),
 ('Duna', 'Frank Herbert', '9788576573135', 'Editora Aleph', '2', '2017', 'pt-br', '12'),
-('The Catcher in the Rye', 'J. D. Salinger', '9780316769488', 'Little Brown and Company', NULL, NULL, 'en', '13');
+('The Catcher in the Rye', 'J. D. Salinger', '9780316769488', 'Little Brown and Company', NULL, NULL, 'en', '13'),
+('O Lobo da Estepe', 'Herman Hesse', '9788501020284', 'Editora Record', '43', '1982', 'pt-br', '14');
 
 INSERT INTO copies (ownerId, bookId, condition) VALUES
 ('1', '1', 'Livro velho, empoeirado'),
@@ -51,4 +53,5 @@ INSERT INTO copies (ownerId, bookId, condition) VALUES
 ('2', '7', 'Um pouco amassado'),
 ('3', '8', 'Um pouco amassado, velho'),
 ('3', '9', 'Novo, em boas condições'),
-('3', '10', 'Arranhado na capa');
+('3', '10', 'Arranhado na capa'),
+('1', '11', 'Em boas condições');

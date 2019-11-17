@@ -20,6 +20,6 @@ export function generateToken(user) {
 
   return jwt.sign({
     userId: user.id
-  }, process.env.PVT_KEY, { expiresIn: '8h' });
+  }, process.env.PVT_KEY, { expiresIn: '24h' });
 
 }
