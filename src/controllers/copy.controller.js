@@ -5,6 +5,39 @@ import { v2 } from 'cloudinary/lib/cloudinary';
 
 class CopyController {
 
+  // @GET /api/users/books/:bookId
+  static async getBookCopies(req, res) {
+
+    const { error } = Joi.validate(req.params,
+      {
+        bookId: Joi.number().integer()
+      }
+    );
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
+    const id = req.params.bookId;
+
+    const copies = await models.Copy.findAll({
+      include: [{
+        model: models.Book, where: { id }
+      }, {
+        model: models.User, attributes: ['id', 'name'], include: [{
+          model: models.Address, attributes: ['city', 'district']
+        },
+        { model: models.Image, attributes: ['cloudimage'] }]
+      }]
+    });
+
+    if (!copies || copies.length === 0) {
+      return res.status(400).json({ success: false, message: 'no copies were found' });
+    }
+
+    return res.json({ success: true, message: `${copies.length} copies found in database`, copies });
+  }
+
   // @POST # /api/users/books/add
   static async addCopy(req, res) {
 

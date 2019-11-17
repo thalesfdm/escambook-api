@@ -5,6 +5,10 @@ import { auth } from '../middleware/auth';
 
 const router = new Router();
 
+// @GET /api/users/books/:bookId
+
+router.get('/:bookId', CopyController.getBookCopies);
+
 // @POST # /api/users/books/add
 // @POST # /api/users/books/copypic
 

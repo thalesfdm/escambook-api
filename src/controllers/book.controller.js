@@ -18,6 +18,27 @@ class BookController {
 
   }
 
+  // @GET /api/books/search/all/:string
+  static async getByAuthorTitle(req, res) {
+
+    const string = req.params.string;
+
+    const books = await models.Book.findAll({
+      where: {
+        [models.Op.or]: [
+          { title: { [models.Op.iRegexp]: string } },
+          { author: { [models.Op.iRegexp]: string } }]
+      }, include: [models.Image]
+    });
+
+    if (!books || books.length === 0) {
+      return res.status(400).json({ success: false, message: 'no books were found' });
+    }
+
+    return res.json({ success: true, message: 'books found in database', books });
+
+  }
+
   // @GET /api/books/search/author/:author
   static async getByAuthor(req, res) {
 

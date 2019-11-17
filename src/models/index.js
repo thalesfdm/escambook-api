@@ -16,6 +16,7 @@ models.Book.belongsTo(models.Image); // coverpic
 models.Book.hasMany(models.Copy);
 
 models.Copy.belongsTo(models.Book);
+models.Copy.belongsTo(models.User);
 models.Copy.hasMany(models.CopyPic);
 
 models.CopyPic.belongsTo(models.Image);

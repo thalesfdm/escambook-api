@@ -6,12 +6,14 @@ import { auth } from '../middleware/auth';
 const router = new Router();
 
 // @GET /api/books/
+// @GET /api/books/search/all/:string
 // @GET /api/books/search/author/:author
 // @GET /api/books/search/isbn/:isbn
 // @GET /api/books/search/title/:title
 // @GET /api/books/:bookId
 
 router.get('/', BookController.getAll);
+router.get('/search/all/:string', BookController.getByAuthorTitle);
 router.get('/search/author/:author', BookController.getByAuthor);
 router.get('/search/isbn/:isbn', BookController.getByIsbn);
 router.get('/search/title/:title', BookController.getByTitle);
