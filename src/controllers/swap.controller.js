@@ -15,9 +15,22 @@ class SwapController {
     const swaps = await models.Swap.findAll({
       where: { situation: 'A' }, required: true,
       include: [
-        { model: models.SwapUser, required: true }, {
+        {
+          model: models.SwapUser, required: true, include:
+          {
+            model: models.User, attributes: ['id', 'name'], required: true, include:
+              [{ model: models.Address, attributes: ['city', 'district'], required: true },
+              { model: models.Image, attributes: ['cloudimage'] }]
+          }
+        }, {
           model: models.SwapCopy, required: true, include:
-            { model: models.Copy, where: { userId }, required: true }
+          {
+            model: models.Copy, where: { userId }, required: true, include:
+            {
+              model: models.Book, required: true, include:
+                { model: models.Image, attributes: ['cloudimage'], required: true }
+            }
+          }
         }]
     });
 
@@ -113,7 +126,7 @@ class SwapController {
     try {
       const swap = await models.Swap.create({
         category, expiresAt,
-        swapcopy: { copyId },
+        swapcopies: { copyId },
         swapusers: { userId },
         situation: 'A'
       }, { include: [models.SwapCopy, models.SwapUser] });
@@ -251,7 +264,7 @@ class SwapController {
       return res.status(400).json({ success: false, message: 'there is no swap with such id' });
     }
 
-    if (userId != swap.swapusers[0].userId && userId != swap.swapcopy.copy.userId) {
+    if (userId != swap.swapusers[0].userId && userId != swap.swapcopies[0].copy.userId) {
       return res.status(400).json({ success: false, message: 'invalid user' });
     }
 

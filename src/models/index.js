@@ -23,12 +23,14 @@ models.CopyPic.belongsTo(models.Image);
 
 models.Image.belongsTo(models.User); // uploaderid
 
+// models.Copy.belongsToMany(models.Swap, { through: models.SwapCopy });
 models.User.belongsToMany(models.Swap, { through: models.SwapUser });
 
+// models.Swap.belongsToMany(models.Copy, { through: models.SwapCopy });
 models.Swap.belongsToMany(models.User, { through: models.SwapUser });
 
+models.Swap.hasMany(models.SwapCopy);
 models.Swap.hasMany(models.SwapUser);
-models.Swap.hasOne(models.SwapCopy);
 
 models.SwapCopy.belongsTo(models.Copy);
 models.SwapUser.belongsTo(models.User);
