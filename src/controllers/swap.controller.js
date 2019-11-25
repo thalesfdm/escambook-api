@@ -54,9 +54,27 @@ class SwapController {
     const swaps = await models.Swap.findAll({
       where: { situation: 'A' }, required: true,
       include: [
-        { model: models.SwapUser, where: { userId }, required: true }, {
+        {
+          model: models.SwapUser, where: { userId }, required: true, include:
+          {
+            model: models.User, attributes: ['id', 'name'], required: true, include:
+              [{ model: models.Address, attributes: ['city', 'district'], required: true },
+              { model: models.Image, attributes: ['cloudimage'] }]
+          }
+        }, {
           model: models.SwapCopy, required: true, include:
-            { model: models.Copy, required: true }
+          {
+            model: models.Copy, required: true, include:
+              [{
+                model: models.Book, required: true, include:
+                  { model: models.Image, attributes: ['cloudimage'], required: true }
+              },
+              {
+                model: models.User, attributes: ['id', 'name'], required: true, include:
+                  [{ model: models.Address, attributes: ['city', 'district'], required: true },
+                  { model: models.Image, attributes: ['cloudimage'] }]
+              }]
+          }
         }]
     });
 
