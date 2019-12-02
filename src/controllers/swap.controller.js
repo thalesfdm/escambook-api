@@ -204,7 +204,7 @@ class SwapController {
       return res.status(400).json({ success: false, message: 'there is no swap with such id' });
     }
 
-    if (userId != swap.swapcopy.copy.userId) {
+    if (userId != swap.swapcopies[0].copy.userId) {
       return res.status(400).json({ success: false, message: 'user is not the owner of the copy' });
     }
 
@@ -213,13 +213,14 @@ class SwapController {
     }
 
     try {
-      const newUser = await models.SwapUser.create({
-        swapId, userId
-      });
+      
+      await models.SwapUser.create({ swapId, userId });
 
       const situation = 'I';
+      const available = false;
 
       await models.Swap.update({ situation }, { where: { id: swapId } });
+      await models.Copy.update({ available }, { where: { id: swap.swapcopies[0].copy.id } });
 
       const acceptedSwap = await models.Swap.findOne({
         where: { id: swapId }, required: true,
